@@ -28,6 +28,7 @@ public class Main extends JavaPlugin {
         Main.main = this;
         this.getCommand("antybot").setExecutor(new Antybot());
         this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
+        this.loadBetterPlugins();
     }
 
     public static Main getInst() {
